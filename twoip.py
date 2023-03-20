@@ -1,14 +1,13 @@
 import requests
-
-def abuse(ip, api_key):
-	url = 'https://api.abuseipdb.com/api/v2/check'
+def twoip(ip):
+	url = 'http://ip-api.com/json/'+ip
 	querystring = {
 	    'ipAddress': ip,
 	    'maxAgeInDays': '90'
 	}
 	headers = {
-	    'Accept': 'application/json',
-    'Key': api_key
+	    'Accept': 'http://ip-api.com/json',
 	}
 	response = requests.request(method='GET', url=url, headers=headers, params=querystring)
-	return response.text
+	print(response.text)
+

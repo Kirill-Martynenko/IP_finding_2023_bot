@@ -1,12 +1,10 @@
 from telebot import types
 import telebot
 import config
-<<<<<<< HEAD
-<<<<<<< HEAD
 import virustotal
 import abuse
 import twoip
-import ipaddress
+
 bot = telebot.TeleBot(config.Token)
 
 markup_menu=types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=1)
@@ -19,8 +17,28 @@ btn_2ip = types.KeyboardButton('/show_2IP')
 markup_menu.row(btn_start, btn_help, btn_ip)
 markup_menu.row(btn_abuse, btn_vt, btn_2ip)
 
+ip = '0.0.0.0'
 
-
+def check_ip(ip_addr):#проверка правильности IP-адреса
+    if (len(ip_addr)) == 0:
+        return False
+    k = 0
+    t = 0
+    for i in range(0, len(ip_addr)):
+        if ((ip_addr[i] >= '0') and (ip_addr[i] <= '9')):
+            k += 1
+        else:
+            if ip_addr[i] == '.':
+                if(k > 3):
+                    return False
+                else:
+                    t += 1
+                    k = 0
+            else:
+                return False
+        if(t > 4):
+            return False
+    return True
 
 @bot.message_handler(commands=['start'])
 def send(message):
@@ -28,15 +46,8 @@ def send(message):
 
 @bot.message_handler(commands=['get_ip'])
 def send(message):
-    msg = bot.send_message(message.chat.id, 'введите IP')
-    ip = msg
-    bot.register_next_step_handler(ip,get)
-
-def get(message):
-    global ip
-    ip_addr = message.text
+    ip_addr = message.text[8:len(message.text)].split()
     while(1):
-
         if check_ip(ip_addr) is True:
             bot.reply_to(message, 'IP-адрес получен', reply_markup=markup_menu)
             ip = ip_addr
@@ -45,53 +56,23 @@ def get(message):
             bot.reply_to(message, 'Ошибка ввода', reply_markup=markup_menu)
             break
 
-def check_ip(ip_addr):#проверка правильности IP-адреса
-    try:
-        ipaddress.ip_address(ip_addr)
-    except ValueError:
-        return False
-    else:
-        return True
-
-
 @bot.message_handler(commands=['show_abuse'])
 def send(message):
-
     result = abuse.abuse(ip, config.Abuse_API)
     bot.reply_to(message, 'Данные получены', reply_markup=markup_menu)
-    bot.send_message(message.chat.id, result)
-
 
 @bot.message_handler(commands=['show_virus_total'])
 def send(message):
     result = virustotal.getVirusTotal(ip, config.VT_API)
     bot.reply_to(message, 'Данные получены', reply_markup=markup_menu)
-    bot.send_message(message.chat.id, result)
 
 @bot.message_handler(commands=['show_2IP'])
 def send(message):
     result = twoip.twoip(ip)
     bot.reply_to(message, 'Данные получены', reply_markup=markup_menu)
-    bot.send_message(message.chat.id, result)
 
 @bot.message_handler(func=lambda m:True)
 def send(message):
     bot.reply_to(message, 'Данное сообщение не является командой', reply_markup=markup_menu)
-=======
-=======
-
-bot = telebot.TeleBot(config.Token)
-
-@bot.message_handler(commands=['start'])
-def send(message):
-    bot.reply_to(message, 'Чат-бот запущен')
->>>>>>> parent of e34a3f3 (bot can get IP)
-
-bot = telebot.TeleBot(config.Token)
-
-@bot.message_handler(commands=['start'])
-def send(message):
-    bot.reply_to(message, 'Чат-бот запущен')
->>>>>>> parent of e34a3f3 (bot can get IP)
 
 bot.polling(none_stop=True)

@@ -2,6 +2,7 @@ from telebot import types
 import telebot
 import config
 <<<<<<< HEAD
+<<<<<<< HEAD
 import virustotal
 import abuse
 import twoip
@@ -77,6 +78,14 @@ def send(message):
 def send(message):
     bot.reply_to(message, 'Данное сообщение не является командой', reply_markup=markup_menu)
 =======
+=======
+
+bot = telebot.TeleBot(config.Token)
+
+@bot.message_handler(commands=['start'])
+def send(message):
+    bot.reply_to(message, 'Чат-бот запущен')
+>>>>>>> parent of e34a3f3 (bot can get IP)
 
 bot = telebot.TeleBot(config.Token)
 

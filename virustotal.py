@@ -1,16 +1,8 @@
 import requests
 
-def getVirusTotal(ip, api_key):
+def getVirusTotal(ip_addr, api_key):
+	url = 'https://www.virustotal.com/vtapi/v2/ip-address/report'
+	params = {'apikey':api_key,'ip':ip_addr}
+	response = requests.get(url, params=params)
+	return response.json()
 
-	url = 'https://www.virustotal.com/api/v3/ip_addresses/ip'
-	params = {'ip':ip}
-	querystring = {
-	    'ipAddress': ip,
-	    'maxAgeInDays': '90'
-	}
-	headers = {
-	    'Accept': 'application/json',
-    'Key': api_key
-	}
-	response = requests.request(method='GET', url=url, headers=headers, params=querystring)
-	return response.text

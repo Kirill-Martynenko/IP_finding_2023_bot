@@ -1,4 +1,6 @@
 import requests
+import abuse
+
 def twoip(ip):
 	url = 'http://ip-api.com/json/'+ip
 	querystring = {
@@ -9,5 +11,6 @@ def twoip(ip):
 	    'Accept': 'http://ip-api.com/json',
 	}
 	response = requests.request(method='GET', url=url, headers=headers, params=querystring)
-	print(response.text)
-
+	res = abuse.add_newlines(response.text)
+	res = res[1:-1]
+	return res

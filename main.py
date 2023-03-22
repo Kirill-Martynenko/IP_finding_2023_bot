@@ -1,11 +1,21 @@
 from telebot import types
 import telebot
-import config
+import ipaddress
+
 import virustotal
 import abuse
 import twoip
-import ipaddress
-bot = telebot.TeleBot(config.Token)
+
+import os
+from dotenv import load_dotenv, find_dotenv
+
+load_dotenv('config.env')
+
+Token = os.environ.get("Token")
+Abuse_API = os.environ.get("Abuse_API")
+VT_API = os.environ.get("VT_API")
+
+bot = telebot.TeleBot(Token)
 
 markup_menu=types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=1)
 btn_start = types.KeyboardButton('/start')
@@ -16,9 +26,6 @@ btn_vt = types.KeyboardButton('/show_virus_total')
 btn_2ip = types.KeyboardButton('/show_2IP')
 markup_menu.row(btn_start, btn_help, btn_ip)
 markup_menu.row(btn_abuse, btn_vt, btn_2ip)
-
-
-
 
 @bot.message_handler(commands=['start'])
 def send(message):
@@ -55,14 +62,13 @@ def check_ip(ip_addr):#проверка правильности IP-адреса
 @bot.message_handler(commands=['show_abuse'])
 def send(message):
 
-    result = abuse.abuse(ip, config.Abuse_API)
+    result = abuse.abuse(ip, Abuse_API)
     bot.reply_to(message, 'Данные получены', reply_markup=markup_menu)
     bot.send_message(message.chat.id, result)
 
-
 @bot.message_handler(commands=['show_virus_total'])
 def send(message):
-    result = virustotal.getVirusTotal(ip, config.VT_API)
+    result = virustotal.getVirusTotal(ip, VT_API)
     bot.reply_to(message, 'Данные получены', reply_markup=markup_menu)
     bot.send_message(message.chat.id, result)
 

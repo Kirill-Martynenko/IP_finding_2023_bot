@@ -22,8 +22,8 @@ btn_start = types.KeyboardButton('/start')
 btn_help = types.KeyboardButton('/help')
 btn_ip = types.KeyboardButton('/get_ip')
 btn_abuse = types.KeyboardButton('/show_abuse')
-btn_vt = types.KeyboardButton('/show_virus_total')
-btn_2ip = types.KeyboardButton('/show_2IP')
+btn_vt = types.KeyboardButton('/show_vt')
+btn_2ip = types.KeyboardButton('/show_2ip')
 markup_menu.row(btn_start, btn_help, btn_ip)
 markup_menu.row(btn_abuse, btn_vt, btn_2ip)
 
@@ -61,22 +61,30 @@ def check_ip(ip_addr):#проверка правильности IP-адреса
 
 @bot.message_handler(commands=['show_abuse'])
 def send(message):
+    try:
+        result = abuse.abuse(ip, Abuse_API)
+        bot.reply_to(message, 'Данные получены', reply_markup=markup_menu)
+        bot.send_message(message.chat.id, result)
+    except NameError:
+        bot.reply_to(message, 'Вы не указали IP-адрес', reply_markup=markup_menu)
 
-    result = abuse.abuse(ip, Abuse_API)
-    bot.reply_to(message, 'Данные получены', reply_markup=markup_menu)
-    bot.send_message(message.chat.id, result)
-
-@bot.message_handler(commands=['show_virus_total'])
+@bot.message_handler(commands=['show_vt'])
 def send(message):
-    result = virustotal.getVirusTotal(ip, VT_API)
-    bot.reply_to(message, 'Данные получены', reply_markup=markup_menu)
-    bot.send_message(message.chat.id, result)
+    try:
+        result = virustotal.getVirusTotal(ip, VT_API)
+        bot.reply_to(message, 'Данные получены', reply_markup=markup_menu)
+        bot.send_message(message.chat.id, result)
+    except NameError:
+        bot.reply_to(message, 'Вы не указали IP-адрес', reply_markup=markup_menu)
 
-@bot.message_handler(commands=['show_2IP'])
+@bot.message_handler(commands=['show_2ip'])
 def send(message):
-    result = twoip.twoip(ip)
-    bot.reply_to(message, 'Данные получены', reply_markup=markup_menu)
-    bot.send_message(message.chat.id, result)
+    try:
+        result = twoip.twoip(ip)
+        bot.reply_to(message, 'Данные получены', reply_markup=markup_menu)
+        bot.send_message(message.chat.id, result)
+    except NameError:
+        bot.reply_to(message, 'Вы не указали IP-адрес', reply_markup=markup_menu)
 
 @bot.message_handler(func=lambda m:True)
 def send(message):

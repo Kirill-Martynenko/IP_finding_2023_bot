@@ -1,6 +1,7 @@
 from telebot import types
 import telebot
 import ipaddress
+import subprocess
 
 import virustotal
 import abuse
@@ -37,6 +38,15 @@ def send(message):
     ip = msg
     bot.register_next_step_handler(ip,get)
 
+def check_ip_address(ip_address):
+    command = ['ping', '-c', '1', '-W', '1', ip_address] 
+    try:
+        subprocess.check_output(command)
+        print('123')
+        return True
+    except subprocess.CalledProcessError:
+        return False
+
 def get(message):
     global ip
     ip_addr = message.text
@@ -44,6 +54,10 @@ def get(message):
 
         if check_ip(ip_addr) is True:
             bot.reply_to(message, 'IP-адрес получен', reply_markup=markup_menu)
+            if check_ip_address(ip_addr) is True:
+                 bot.reply_to(message, 'IP-адрес доступен', reply_markup=markup_menu)
+            else:
+                 bot.reply_to(message, 'IP-адрес недоступен', reply_markup=markup_menu)
             ip = ip_addr
             break
         else:

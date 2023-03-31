@@ -1,5 +1,4 @@
 from vtapi3 import VirusTotalAPIIPAddresses, VirusTotalAPIError
-import requests
 import json
 
 import abuse

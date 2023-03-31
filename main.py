@@ -1,4 +1,5 @@
 from telebot import types
+from pythonping import ping
 import telebot
 import ipaddress
 import subprocess
@@ -46,7 +47,7 @@ def send(message):
     bot.register_next_step_handler(ip,get)
 
 def check_ip_address(ip_address):
-    command = ['ping ', '-c ', '10 ', ip_address]
+    command = ['ping', '-w', '1', ip_address]
     try:
         subprocess.check_output(command)
         return True

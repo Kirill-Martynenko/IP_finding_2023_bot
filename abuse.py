@@ -16,10 +16,11 @@ def abuse(ip, api_key):
 	return res
 
 def add_newlines(text):
-    new_text = ""
-    for char in text:
-        if char == ",":
-            new_text += "\n"
-        else:
-            new_text += char
-    return new_text
+	new_text = ""
+	for char in text:
+		if char == ",":
+			new_text += "\n"
+		else :
+			if (char != '"') and (char != '[') and (char != ']'):
+				new_text += char
+	return new_text

@@ -32,6 +32,13 @@ markup_menu.row(btn_abuse, btn_vt, btn_2ip)
 def send(message):
     bot.reply_to(message, 'Чат-бот запущен', reply_markup=markup_menu)
 
+@bot.message_handler(commands=['help'])
+def send(message):
+    bot.reply_to(message, 'Команды:\n/start - запуск чат-бота\n/help - вывод списка команд\n'
+                          '/get_ip - ввод IP-адреса\n/show_abuse - вывод информации с сервиса Abuse\n'
+                          '/show_vt - вывод информации с сервиса VirusTotal\n'
+                          '/show_2ip - вывод информации с сервиса 2IP', reply_markup=markup_menu)
+
 @bot.message_handler(commands=['get_ip'])
 def send(message):
     msg = bot.send_message(message.chat.id, 'введите IP')
@@ -39,10 +46,9 @@ def send(message):
     bot.register_next_step_handler(ip,get)
 
 def check_ip_address(ip_address):
-    command = ['ping', '-c', '1', '-W', '1', ip_address] 
+    command = ['ping ', '-c ', '10 ', ip_address]
     try:
         subprocess.check_output(command)
-        print('123')
         return True
     except subprocess.CalledProcessError:
         return False

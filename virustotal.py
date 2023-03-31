@@ -1,6 +1,7 @@
-import requests
 from vtapi3 import VirusTotalAPIIPAddresses, VirusTotalAPIError
+import requests
 import json
+
 import abuse
 
 def getVirusTotal(ip_addr, api_key):

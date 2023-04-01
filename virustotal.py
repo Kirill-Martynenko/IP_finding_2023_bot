@@ -1,14 +1,9 @@
 from vtapi3 import VirusTotalAPIIPAddresses, VirusTotalAPIError
 import json
 
-class result_string:
-    text = ""
-
-    def add_text(self, s):
-        self.text += s
-
 def getVirusTotal(ip_addr, api_key):
-    result = result_string()
+    result = "Network: %s\nCountry: %s\nOwner: %s\nLast analysis stats:\n\t\t\t\tharmless: %s\n\t\t\t\tmalicious: %s" \
+           "\n\t\t\t\tsuspicious: %s\n\t\t\t\tundetected: %s\n\t\t\t\ttimeout: %s\nasn: %s\nid: %s"
     vt_api_ip_addresses = VirusTotalAPIIPAddresses(api_key)
     try:
         output = vt_api_ip_addresses.get_report(ip_addr)
@@ -17,34 +12,30 @@ def getVirusTotal(ip_addr, api_key):
     else:
         if vt_api_ip_addresses.get_last_http_error() == vt_api_ip_addresses.HTTP_OK:
             output = json.loads(output)
+            d = []
             try:
-                result.add_text("Network: " + output["data"]["attributes"]["network"] + "\n")
+                d.append(output["data"]["attributes"]["network"])
             except KeyError:
-                result.add_text("Network: unknown\n")
+                d.append("unknown")
             try:
-                result.add_text("Country: " + output["data"]["attributes"]["country"] + "\n")
+                d.append(output["data"]["attributes"]["country"])
             except KeyError:
-                result.add_text("Country: unknown \n")
+                d.append("unknown")
             try:
-                result.add_text("Owner: " + output["data"]["attributes"]["as_owner"] + "\n")
+                d.append(output["data"]["attributes"]["as_owner"])
             except KeyError:
-                result.add_text("Owner: unknown\n")
-            result.add_text("Last analysis stats:")
-            result.add_text("\n" + "\t\t\t\t")
-            result.add_text("harmless: " + str(output["data"]["attributes"]["last_analysis_stats"]["harmless"]))
-            result.add_text("\n" + "\t\t\t\t")
-            result.add_text("malicious: " + str(output["data"]["attributes"]["last_analysis_stats"]["malicious"]))
-            result.add_text("\n" + "\t\t\t\t")
-            result.add_text("suspicious: " + str(output["data"]["attributes"]["last_analysis_stats"]["suspicious"]))
-            result.add_text("\n" + "\t\t\t\t")
-            result.add_text("undetected: " + str(output["data"]["attributes"]["last_analysis_stats"]["undetected"]))
-            result.add_text("\n" + "\t\t\t\t")
-            result.add_text("timeout: " + str(output["data"]["attributes"]["last_analysis_stats"]["timeout"]) + "\n")
+                d.append("unknown")
+            d.append(str(output["data"]["attributes"]["last_analysis_stats"]["harmless"]))
+            d.append(str(output["data"]["attributes"]["last_analysis_stats"]["malicious"]))
+            d.append(str(output["data"]["attributes"]["last_analysis_stats"]["suspicious"]))
+            d.append(str(output["data"]["attributes"]["last_analysis_stats"]["undetected"]))
+            d.append(str(output["data"]["attributes"]["last_analysis_stats"]["timeout"]))
             try:
-                result.add_text("asn: " + str(output["data"]["attributes"]["asn"]) + "\n")
+                d.append(str(output["data"]["attributes"]["asn"]))
             except KeyError:
-                result.add_text("asn: unknown\n")
-            result.add_text("id: " + output["data"]["id"])
-            return(result.text)
+                d.append("unknown")
+            d.append(output["data"]["id"])
+            result = result % (d[0], d[1], d[2], d[3], d[4], d[5], d[6], d[7], d[8], d[9])
+            return(result)
         else:
             return('HTTP Error [' + str(vt_api_ip_addresses.get_last_http_error()) + ']')

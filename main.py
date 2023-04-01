@@ -58,13 +58,13 @@ def get(message):
     global ip
     ip_addr = message.text
     while(1):
-
         if check_ip(ip_addr) is True:
             bot.reply_to(message, 'IP-адрес получен', reply_markup=markup_menu)
+            bot.send_message(message.chat.id, 'Идёт проверка на доступность')
             if check_ip_address(ip_addr) is True:
-                 bot.reply_to(message, 'IP-адрес доступен', reply_markup=markup_menu)
+                bot.reply_to(message, 'IP-адрес доступен', reply_markup=markup_menu)
             else:
-                 bot.reply_to(message, 'IP-адрес недоступен', reply_markup=markup_menu)
+                bot.reply_to(message, 'IP-адрес недоступен', reply_markup=markup_menu)
             ip = ip_addr
             break
         else:
